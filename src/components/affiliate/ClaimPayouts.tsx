@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import { useWeb3 } from "../../hooks/useWeb3";
 import { useNotification } from "../../context/NotificationContext";
@@ -32,6 +32,12 @@ export const ClaimPayouts = () => {
   const { claimPayoutOnChain } = useWeb3();
   const { showNotification } = useNotification();
   const [claimingId, setClaimingId] = useState<number | null>(null);
+  // current Unix timestamp (seconds)
+  const [now, setNow] = useState(() => Date.now() / 1000);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now() / 1000), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleClaim = async (saleId: number) => {
     setClaimingId(saleId);
@@ -65,7 +71,7 @@ export const ClaimPayouts = () => {
       campaignAddress: "CA7QW5KXGPTR4N2K9J2...",
       saleAmount: "100.0",
       commissionAmount: "10.0",
-      timestamp: Date.now() / 1000 - 1209600,
+      timestamp: now - 1209600,
       clearingPeriod: 604800,
     },
     {
@@ -73,19 +79,19 @@ export const ClaimPayouts = () => {
       campaignAddress: "CB4RN8XJLP8M1K3V6P7...",
       saleAmount: "250.0",
       commissionAmount: "25.0",
-      timestamp: Date.now() / 1000 - 864000,
+      timestamp: now - 864000,
       clearingPeriod: 604800,
     },
   ];
 
   const isSaleClaimable = (sale: ClaimableSale) => {
-    return Date.now() / 1000 >= sale.timestamp + sale.clearingPeriod;
+    return now >= sale.timestamp + sale.clearingPeriod;
   };
 
   const formatTimestamp = (timestamp: number) => new Date(timestamp * 1000).toLocaleDateString();
 
   const getTimeRemaining = (sale: ClaimableSale) => {
-    const remaining = sale.timestamp + sale.clearingPeriod - Date.now() / 1000;
+    const remaining = sale.timestamp + sale.clearingPeriod - now;
     if (remaining <= 0) return "Ready to claim";
     const days = Math.ceil(remaining / 86400);
     return `${days} day${days !== 1 ? "s" : ""} remaining`;

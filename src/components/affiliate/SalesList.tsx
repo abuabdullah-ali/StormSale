@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -38,6 +38,11 @@ export const SalesList = () => {
   const [decryptedData, setDecryptedData] = useState<object | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDecrypting, setIsDecrypting] = useState(false);
+  const [now, setNow] = useState(() => Date.now() / 1000);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now() / 1000), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const mockSales: Sale[] = [
     {
@@ -45,7 +50,7 @@ export const SalesList = () => {
       affiliate: "GBBD...5678",
       saleAmount: "100.0",
       commissionAmount: "10.0",
-      timestamp: Date.now() / 1000 - 86400,
+      timestamp: now - 86400,
       claimed: false,
     },
     {
@@ -53,7 +58,7 @@ export const SalesList = () => {
       affiliate: "GBBD...5678",
       saleAmount: "250.0",
       commissionAmount: "25.0",
-      timestamp: Date.now() / 1000 - 172800,
+      timestamp: now - 172800,
       claimed: true,
     },
   ];
