@@ -24,7 +24,7 @@ class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { hasError: boolean; error?: Error }
 > {
-  constructor(props: any) {
+  constructor(props: { children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false };
   }
@@ -33,7 +33,7 @@ class ErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, info: any) {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
     // You can log error to an external service here
     console.error("Unhandled error caught by ErrorBoundary:", error, info);
   }
@@ -84,14 +84,6 @@ function Router() {
     );
   }
 
-  // Check if current route is a custom short-link path e.g. /c/:slug
-  const isShortLinkRoute =
-    typeof window !== "undefined" && window.location.pathname.startsWith("/c/");
-
-  if (isShortLinkRoute) {
-    return <ShortLinkRedirect />;
-  }
-
   return (
     <>
       <ConnectWalletModal />
@@ -124,6 +116,17 @@ function Router() {
 }
 
 function App() {
+  const isShortLinkRoute =
+    typeof window !== "undefined" && window.location.pathname.startsWith("/c/");
+
+  if (isShortLinkRoute) {
+    return (
+      <ErrorBoundary>
+        <ShortLinkRedirect />
+      </ErrorBoundary>
+    );
+  }
+
   return (
     <NotificationWrapper>
       <ErrorBoundary>

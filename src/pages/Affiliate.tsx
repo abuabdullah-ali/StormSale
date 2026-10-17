@@ -10,13 +10,12 @@ import {
   Users,
   TrendingUp,
   DollarSign,
-  BarChart3,
   Shield,
   LayoutDashboard,
   Link2,
+  Sliders,
 } from "lucide-react";
 import { AffiliateSettings } from "../components/affiliate/AffiliateSettings";
-import { Users, TrendingUp, DollarSign, Shield, LayoutDashboard, Sliders } from "lucide-react";
 import { NotificationProvider } from "../context/NotificationContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../components/ui/button";
